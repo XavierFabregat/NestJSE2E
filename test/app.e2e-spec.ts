@@ -1,19 +1,25 @@
 import { Test } from '@nestjs/testing';
 import * as pactum from 'pactum';
 import { AppModule } from '../src/app.module';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { AuthDto } from 'src/auth/dto';
+import { EditUserDto } from 'src/user/dto';
 
 describe('App e2e', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    const moduleRef =
+      await Test.createTestingModule({
+        imports: [AppModule],
+      }).compile();
 
-    app = moduleRef.createNestApplication();
+    app =
+      moduleRef.createNestApplication();
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -21,9 +27,13 @@ describe('App e2e', () => {
     );
     await app.init();
     await app.listen(5050);
-    prisma = app.get<PrismaService>(PrismaService);
+    prisma = app.get<PrismaService>(
+      PrismaService,
+    );
     await prisma.cleanDb();
-    pactum.request.setBaseUrl('http://localhost:5050');
+    pactum.request.setBaseUrl(
+      'http://localhost:5050',
+    );
   });
 
   afterAll(() => {
@@ -54,12 +64,36 @@ describe('App e2e', () => {
         return pactum
           .spec()
           .post('/auth/signup')
-          .withBody({ email: dto.email })
+          .withBody({
+            email: dto.email,
+          })
           .expectStatus(400);
       });
       it('should throw if no body provided', () => {
-        return pactum.spec().post('/auth/signup').expectStatus(400);
+        return pactum
+          .spec()
+          .post('/auth/signup')
+          .expectStatus(400);
       });
+
+      it('should throw if email is taken', async () => {
+        await pactum
+          .spec()
+          .post('/auth/signup')
+          .withBody({
+            email: 'taken@example.com',
+            password: '123',
+          });
+        return pactum
+          .spec()
+          .post('/auth/signup')
+          .withBody({
+            email: 'taken@example.com',
+            password: '123',
+          })
+          .expectStatus(403);
+      });
+
       it('should signup', async () => {
         return pactum
           .spec()
@@ -83,11 +117,16 @@ describe('App e2e', () => {
         return pactum
           .spec()
           .post('/auth/signin')
-          .withBody({ email: dto.email })
+          .withBody({
+            email: dto.email,
+          })
           .expectStatus(400);
       });
       it('should throw if no body provided', () => {
-        return pactum.spec().post('/auth/signin').expectStatus(400);
+        return pactum
+          .spec()
+          .post('/auth/signin')
+          .expectStatus(400);
       });
       it('should Sign in', () => {
         return pactum
@@ -95,7 +134,10 @@ describe('App e2e', () => {
           .post('/auth/signin')
           .withBody(dto)
           .expectStatus(200)
-          .stores('userAt', 'access_token');
+          .stores(
+            'userAt',
+            'access_token',
+          );
       });
     });
   });
@@ -103,24 +145,80 @@ describe('App e2e', () => {
   describe('User', () => {
     describe('Get me', () => {
       it('should throw if no access_token is provided', () => {
-        return pactum.spec().get('/users/me').expectStatus(401);
+        return pactum
+          .spec()
+          .get('/users/me')
+          .expectStatus(401);
       });
       it('should get current user', () => {
         return pactum
           .spec()
           .get('/users/me')
           .withHeaders({
-            Authorization: 'Bearer $S{userAt}',
+            Authorization:
+              'Bearer $S{userAt}',
           })
           .expectStatus(200);
       });
     });
-    describe('Edit user', () => {});
+    describe('Edit user', () => {
+      const editDto: EditUserDto = {
+        email: 'edit@example.com',
+        lastName: 'Doe',
+        firstName: 'John',
+      };
+
+      const takenDto: EditUserDto = {
+        ...editDto,
+        email: 'taken@example.com',
+      };
+
+      it('should thorw if no access_token is provided', () => {
+        return pactum
+          .spec()
+          .patch('/users')
+          .withBody(editDto)
+          .expectStatus(401);
+      });
+
+      it('should throw if email is taken', () => {
+        return pactum
+          .spec()
+          .patch('/users')
+          .withBody(takenDto)
+          .withHeaders({
+            Authorization:
+              'Bearer $S{userAt}',
+          })
+          .expectStatus(403);
+      });
+
+      it('should edit user', () => {
+        return pactum
+          .spec()
+          .patch('/users')
+          .withBody(editDto)
+          .withHeaders({
+            Authorization:
+              'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .expectBodyContains(
+            editDto.email,
+          )
+          .expectBodyContains(
+            editDto.firstName,
+          )
+          .expectBodyContains(
+            editDto.lastName,
+          );
+      });
+    });
   });
 
   describe('Bookmarks', () => {
     describe('Create Bookmark', () => {});
-    describe('Get Bookmark', () => {});
+    describe('Get User Bookmarks', () => {});
     describe('Get Bookmark by Id', () => {});
     describe('Edit Bookmark by Id', () => {});
     describe('Delete Bookmark by Id', () => {});
