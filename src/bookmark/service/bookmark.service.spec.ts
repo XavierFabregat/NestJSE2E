@@ -7,44 +7,10 @@ import {
   EditBookmarkDto,
 } from '../dto';
 import { ForbiddenException } from '@nestjs/common';
-
-const mockBookmarks: Bookmark[] = [
-  {
-    id: 1,
-    link: 'https://nestjs.com',
-    title: 'NestJS',
-    description: 'NestJS Framework',
-    userId: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 2,
-    link: 'https://example.com',
-    title: 'Example',
-    description: 'Example description',
-    userId: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 3,
-    link: 'https://example.com',
-    title: 'Example',
-    description: 'Example description',
-    userId: 2,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
-
-const mockUpdatedBookmark: Bookmark = {
-  ...mockBookmarks[0],
-  link: 'https://nestjs.com',
-  title: 'NestJS is Awesome',
-  description: 'Updated description',
-  updatedAt: new Date(),
-};
+import {
+  mockBookmarks,
+  mockUpdatedBookmark,
+} from '../../../test/mock.data';
 
 describe('BookmarkService', () => {
   let mockPrismaService: PrismaService;

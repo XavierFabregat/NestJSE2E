@@ -29,28 +29,32 @@ export class BookmarkService {
     return bookmark;
   }
 
-  getBookmarks(userId: number) {
-    return this.prisma.bookmark.findMany(
-      {
-        where: {
-          userId,
+  async getBookmarks(userId: number) {
+    const bookmarks =
+      await this.prisma.bookmark.findMany(
+        {
+          where: {
+            userId,
+          },
         },
-      },
-    );
+      );
+    return bookmarks;
   }
 
-  getBookmarkById(
+  async getBookmarkById(
     userId: number,
     bookmarkId: number,
   ) {
-    return this.prisma.bookmark.findFirst(
-      {
-        where: {
-          id: bookmarkId,
-          userId,
+    const bookmark =
+      await this.prisma.bookmark.findFirst(
+        {
+          where: {
+            id: bookmarkId,
+            userId,
+          },
         },
-      },
-    );
+      );
+    return bookmark;
   }
 
   async editBookmarkById(
