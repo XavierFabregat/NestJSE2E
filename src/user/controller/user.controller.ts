@@ -6,10 +6,10 @@ import {
   Body,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { GetUser } from '../auth/decorator';
-import { JwtGuard } from '../auth/guard';
-import { EditUserDto } from './dto';
-import { UserService } from './user.service';
+import { GetUser } from '../../auth/decorator';
+import { JwtGuard } from '../../auth/guard';
+import { EditUserDto } from '../dto';
+import { UserService } from '../service/user.service';
 
 @UseGuards(JwtGuard)
 @Controller('users')
