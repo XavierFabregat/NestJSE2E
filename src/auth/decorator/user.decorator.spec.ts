@@ -37,6 +37,7 @@ describe('GetUser Decorator', () => {
   it('should return the current user if no data is passed', () => {
     const result = getUser(null, ctx);
     expect(result).toBeDefined();
+    expect(result).toEqual(mockUser);
   });
 
   it('should return the correct field for any given data', () => {
