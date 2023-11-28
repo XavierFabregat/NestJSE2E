@@ -4,7 +4,7 @@ import {
 } from '@nestjs/testing';
 import { BookmarkModule } from './bookmark.module';
 import { BookmarkService } from './service/bookmark.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/service/prisma.service';
 import { ConfigService } from '@nestjs/config';
 describe('BookmarkModule', () => {
   let bookmarkModule: TestingModule;

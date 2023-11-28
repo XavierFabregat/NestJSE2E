@@ -1,5 +1,5 @@
 import { createMock } from '@golevelup/ts-jest';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../../prisma/service/prisma.service';
 import { BookmarkService } from './bookmark.service';
 import { Bookmark } from '@prisma/client';
 import {
