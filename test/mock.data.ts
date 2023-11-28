@@ -1,5 +1,8 @@
 import { Bookmark } from '@prisma/client';
 
+export const MOCK_DB_ENV =
+  'postgresql://postgres:123@localhost:5435/nest?schema=public';
+
 export const mockUsers = [
   {
     id: 1,
