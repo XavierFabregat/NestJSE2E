@@ -9,11 +9,21 @@ export const mockUsers = [
     createdAt: new Date(),
     updatedAt: new Date(),
   },
+  {
+    id: 2,
+    email: 'taken@test.com',
+    firstName: 'Taken',
+    lastName: 'McTakenson',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
 ];
 
 export const updatedUser = {
   ...mockUsers[0],
-  firstName: 'Updated',
+  email: 'edit@example.com',
+  firstName: 'Edit',
+  lastName: 'McEditson',
   updatedAt: new Date(),
 };
 

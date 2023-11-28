@@ -2,9 +2,10 @@ import {
   Injectable,
   ForbiddenException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { EditUserDto } from './dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { EditUserDto } from '../dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -15,7 +16,7 @@ export class UserService {
   async editUser(
     id: number,
     dto: EditUserDto,
-  ) {
+  ): Promise<Omit<User, 'hash'>> {
     try {
       const user =
         await this.prisma.user.update({

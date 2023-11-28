@@ -18,7 +18,9 @@ export class UserController {
     private userService: UserService,
   ) {}
   @Get('me')
-  getMe(@GetUser() user: User) {
+  getMe(
+    @GetUser() user: Omit<User, 'hash'>,
+  ) {
     return user;
   }
 
